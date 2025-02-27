@@ -1,51 +1,62 @@
-create table aluno
-( ra number(5) primary key,
-    nomealuno varchar2(40),
-    codcurso number(3));
+select sysdate from dual;
 
-create table curso
-( codcurso number(3) primary key,
-    nomecurso varchar2(30));
-    
+// formato de data dd/mm/yyyy:hh24:mi:ss
 
-INSERT INTO aluno values (12345, 'Pasquale X', 003);
-INSERT INTO aluno values (12355, 'Ribervaldo X', 002);
+SELECT to_char(sysdate, 'dd/mm/yyyy:hh24:mi:ss') from dual;
 
-INSERT INTO curso values (001, 'Eletrônica');
-INSERT INTO curso values (002, 'Biomédicos');
-INSERT INTO curso values (003, 'ADS');
+SELECT to_char(sysdate, 'dd:hh24:mi:ss') from dual;
 
 
-SELECT * from  user_tables;
-select * from user_tab_columns;
+//extract
 
-select * from user_constraints
-where table_name = 'CURSO';
+select extract (year from sysdate) from dual;
 
-select * from user_constraints
-where table_name = 'ALUNO';
+// subtração de datas
 
-alter table curso modify nomecurso varchar2(30) not null;
+select sysdate - 30 from dual; // subtração é feita em DIAS!
 
--- Excluindo a PK para criar novamente dando nome à constraint
-alter table aluno drop constraint SYS_C00190043;
+select add_months(sysdate, -1) from dual; // subtrai meses
 
--- Criando a PK nomeando a constraint
+select add_months(sysdate, +1) from dual;
+select add_months(sysdate, +2) from dual;
 
-alter table aluno add constraint  PK_ALUNO_RA primary key (ra);
 
--- verificando
+// diferença entre datas
+select sysdate - datanascimento from autor;
 
-select * from user_constraints
-where table_name = 'ALUNO';
+//calcular quantos dias eu já vivi
+select sysdate - to_date('15-10-1992','dd/mm/yyyy') from dual;
 
--- definindo chave estrangeira
-alter table aluno add constraint FK_ALUNO_CODCURSO foreign key (CODCURSO) references CURSO;
+// Calcular minha idade exata
+select (sysdate - to_date('15-10-1992','dd/mm/yyyy'))/365.25 from dual;
 
--- testando a FK
-INSERT INTO aluno values (3333, 'Antonio X', 004);
 
--- verificando a FK
+SELECT titulo FROM livro  WHERE titulo LIKE '%BANCO de DADOS%';
 
-select * from user_constraints
-where table_name = 'ALUNO';
+SELECT titulo FROM livro  WHERE titulo = '-------- de DADOS%';
+
+SELECT codAssunto, count(*) as quantidade from Livro
+Group by codAssunto; 
+
+Select count(codassunto) from livro; //não conta conteúdos nulos!
+
+
+SELECT codAutor, count(*) as quantidade
+FROM AutorLivro
+GROUP BY CodAutor
+HAVING COUNT(*) >=2; // filtra a contagem apenas aos valores que tiverem mais de 2
+
+select * from livro;
+select * from autor;
+
+SELECT autor.nomeautor, codAutor, count(*) as quantidade
+FROM AutorLivro INNER JOIN Autor
+ON AutorLivro.codautor = autor.codautor
+GROUP BY autorlivro.codautor, autor.nomeautor
+HAVING COUNT(*) >=2;
+
+
+
+
+
+
